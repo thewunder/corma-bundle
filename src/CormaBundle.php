@@ -4,13 +4,12 @@ namespace Corma\CormaBundle;
 use Corma\DBAL\Connection;
 use Corma\DBAL\DriverManager;
 use Corma\ObjectMapper;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Psr16Cache;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use function Symfony\Component\DependencyInjection\Loader\Configurator\service;
 
 class CormaBundle extends AbstractBundle
 {
@@ -45,11 +44,16 @@ class CormaBundle extends AbstractBundle
             ->call('executeQuery', [$selectDbQuery]);
 
         $container->services()->set('corma.cache', Psr16Cache::class)
-            ->args(['cache.app']);
+            ->args([service('cache.app')]);
 
         $container->services()->set('corma.orm', ObjectMapper::class)
             ->factory([ObjectMapper::class, 'withDefaults'])
-            ->args([new Reference('corma.connection'), 'corma.cache', ContainerInterface::class, 'event_dispatcher'])
+            ->args([
+                service('corma.connection'),
+                service('service_container'),
+                service('corma.cache'),
+                service('event_dispatcher')
+            ])
             ->alias(ObjectMapper::class, 'corma.orm');
     }
 }
