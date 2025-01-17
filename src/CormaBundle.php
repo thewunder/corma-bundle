@@ -17,12 +17,12 @@ class CormaBundle extends AbstractBundle
     {
         $definition->rootNode()->children()
             ->arrayNode('database')->children()
-                ->scalarNode('driver')->isRequired()->cannotBeEmpty()->defaultValue('pdo_mysql')->end()
-                ->scalarNode('host')->isRequired()->cannotBeEmpty()->defaultValue('localhost')->end()
-                ->integerNode('port')->isRequired()->defaultValue(3306)->end()
-                ->scalarNode('database')->isRequired()->cannotBeEmpty()->end()
-                ->scalarNode('user')->isRequired()->cannotBeEmpty()->defaultValue('root')->end()
-                ->scalarNode('password')->isRequired()->end()
+            ->scalarNode('driver')->isRequired()->cannotBeEmpty()->defaultValue('pdo_mysql')->end()
+            ->scalarNode('host')->isRequired()->cannotBeEmpty()->defaultValue('localhost')->end()
+            ->integerNode('port')->isRequired()->defaultValue(3306)->end()
+            ->scalarNode('database')->isRequired()->cannotBeEmpty()->end()
+            ->scalarNode('user')->isRequired()->cannotBeEmpty()->defaultValue('root')->end()
+            ->scalarNode('password')->isRequired()->end()
             ->end();
     }
 
@@ -53,7 +53,8 @@ class CormaBundle extends AbstractBundle
                 service('service_container'),
                 service('corma.cache'),
                 service('event_dispatcher')
-            ])
-            ->alias(ObjectMapper::class, 'corma.orm');
+            ])->public()
+            ->alias(ObjectMapper::class, 'corma.orm')
+            ->public();
     }
 }
